@@ -4,7 +4,7 @@ param(
     [string]$Profile = 'pricing-personal',
     [string]$Region = 'ap-south-1',
     [string]$StackName = 'dynamic-pricing-demo',
-    [string]$Email = 'dhruv.agnihotri2024@vitstudent.ac.in'
+    [string]$Email = 'akshithreddy.t11@gmail.com'
 )
 $ErrorActionPreference = 'Stop'
 $pricingRoot = Split-Path $PSScriptRoot -Parent

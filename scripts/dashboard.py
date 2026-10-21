@@ -104,7 +104,10 @@ class Demo:
             raise RuntimeError(f"Product API returned {status}. Run Start-RealPricingDemo.ps1 -Deploy to upgrade the collector.")
         status, products = request(session, api, "GET", "/products")
         existing = next((row for row in products if row.get("productId") == product_id), {}) if status == 200 else {}
-        if any(str(existing.get(key)) != str(product[key]) for key in ("priceSource", "catalogId", "comparisonBasis", "currency", "currentPrice", "minimumPrice", "undercutPercent", "vendorEmail")):
+        _numeric = {"currentPrice", "minimumPrice", "undercutPercent"}
+        if any((Decimal(str(existing.get(key))) != Decimal(str(product[key]))) if key in _numeric
+               else str(existing.get(key)) != str(product[key])
+               for key in ("priceSource", "catalogId", "comparisonBasis", "currency", "currentPrice", "minimumPrice", "undercutPercent", "vendorEmail")):
             raise RuntimeError("Cloud product has different settings or old code. Run the -Deploy launcher before using cloud check.")
         status, accepted = request(session, api, "POST", "/checks", {"productId": product_id})
         event_id = accepted.get("Entries", [{}])[0].get("EventId")
